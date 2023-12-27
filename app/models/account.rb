@@ -278,6 +278,10 @@ class Account < ApplicationRecord
     update!(sensitized_at: nil)
   end
 
+  def trendable?
+    boolean_with_default('trendable', Setting.trendable_by_default)
+  end
+
   def memorialize!
     update!(memorial: true)
   end
