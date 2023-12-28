@@ -132,7 +132,7 @@ class PostStatusService < BaseService
   end
 
   def postprocess_status!
-    process_hashtags_service.call(@status)
+    process_hashtags_service.call(@status, [], @text)
     Trends.tags.register(@status)
     LinkCrawlWorker.perform_async(@status.id)
     DistributionWorker.perform_async(@status.id)
@@ -200,8 +200,10 @@ class PostStatusService < BaseService
   end
 
   def status_attributes
+    text_without_hashtags, hashtags = extract_hashtags(@text)
+    @status_hashtags = hashtags
     {
-      text: @text,
+      text: text_without_hashtags,
       media_attachments: @media || [],
       ordered_media_attachment_ids: (@options[:media_ids] || []).map(&:to_i) & @media.map(&:id),
       thread: @in_reply_to,
@@ -211,10 +213,16 @@ class PostStatusService < BaseService
       visibility: @visibility,
       language: valid_locale_cascade(@options[:language], @account.user&.preferred_posting_language, I18n.default_locale),
       application: @options[:application],
-      content_type: @options[:content_type] || @account.user&.setting_default_content_type,
-      rate_limit: @options[:with_rate_limit],
+      rate_limit: @options[:with_rate_limit]
     }.compact
   end
+
+  def extract_hashtags(text)
+    hashtags = text.scan(/#[^\s]+(\s+|$)/).flatten
+    text_without_hashtags = text.gsub(/#[^\s]+(\s+|$)/, '').strip
+    [text_without_hashtags, hashtags]
+  end
+
 
   def scheduled_status_attributes
     {
