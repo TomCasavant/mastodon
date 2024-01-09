@@ -86,6 +86,27 @@ module Extractor
     possible_entries
   end
 
+  def clean_text(text)
+    text.strip! # Strip whitespace from the end of the text
+    tags_with_indices = extract_hashtags_with_indices(text)
+    tags_with_indices.reverse_each do |tag_info|
+      tag_text = tag_info[:hashtag]
+      start_index, end_index = tag_info[:indices]
+      # Only remove tags from the post IFF they are at the end of the post, otherwise we just want to remove the '#' char
+      if end_index == text.length - 1
+        # Remove the tag from the original text
+        text[start_index..end_index] = ''
+      else
+        # Remove only the '#' character
+        text[start_index] = '' if text[start_index] == '#'
+      end
+    end
+  
+    # Remove any trailing whitespace after removing tags
+    text.strip!
+  end
+
+
   def extract_cashtags_with_indices(_text)
     []
   end
