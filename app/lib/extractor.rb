@@ -87,24 +87,49 @@ module Extractor
   end
 
   def clean_text(text)
-    text.strip! # Strip whitespace from the end of the text
-    tags_with_indices = extract_hashtags_with_indices(text)
-    tags_with_indices.reverse_each do |tag_info|
-      tag_text = tag_info[:hashtag]
-      start_index, end_index = tag_info[:indices]
-      # Only remove tags from the post IFF they are at the end of the post, otherwise we just want to remove the '#' char
-      if end_index == text.length - 1
-        # Remove the tag from the original text
-        text[start_index..end_index] = ''
+    hashtags_with_indices = extract_hashtags_with_indices(text)
+    hashtags = hashtags_with_indices.map { |entry| entry[:hashtag] }
+    cleaned_text = text.dup
+
+    entities = hashtags_with_indices.map { |entry| { hashtag: true, indices: entry[:indices] } }
+    block_begin = nil
+    block_end = nil
+
+    entities.each_with_index do |entity, i|
+      next unless entity[:hashtag]
+
+      next_entity = entities[i + 1]
+
+      if !next_entity.nil? && !next_entity[:hashtag]
+        block_begin = nil
+        block_end = nil
+        next
+      elsif next_entity.nil?
+        block_begin = entity[:indices].first if block_begin.nil?
+        block_end = entity[:indices].last
+        next
+      end
+
+      entity_end = entity[:indices].last
+      next_entity_start = next_entity[:indices].first
+
+      if next_entity_start == entity_end + 1
+        block_begin = entity[:indices].first if block_begin.nil?
+        block_end = entity_end
       else
-        # Remove only the '#' character
-        text[start_index] = '' if text[start_index] == '#'
+        block_begin = nil
+        block_end = nil
       end
     end
-  
-    # Remove any trailing whitespace after removing tags
-    text.strip!
+
+    # Remove the block of hashtags at the end of the text
+    if block_begin && block_end && cleaned_text[block_end..].strip.empty? && cleaned_text[block_begin - 1] == "\n"
+      cleaned_text.slice!(block_begin..block_end)
+    end
+    [cleaned_text.strip, hashtags]
   end
+
+
 
 
   def extract_cashtags_with_indices(_text)
