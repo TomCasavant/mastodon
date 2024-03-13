@@ -126,7 +126,8 @@ module Extractor
     if block_begin && block_end && cleaned_text[block_end..].strip.empty? && cleaned_text[block_begin - 1] == "\n"
       cleaned_text.slice!(block_begin..block_end)
     end
-    [cleaned_text.strip, hashtags]
+
+    cleaned_text.strip
   end
 
 

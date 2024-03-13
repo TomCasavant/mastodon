@@ -197,8 +197,8 @@ class PostStatusService < BaseService
   end
 
   def status_attributes
-    text_without_hashtags, hashtags = extract_hashtags(@text)
-    @status_hashtags = hashtags
+    text_without_hashtags = Extractor.clean_text(@text)
+
     {
       text: text_without_hashtags,
       media_attachments: @media || [],
@@ -214,13 +214,6 @@ class PostStatusService < BaseService
       rate_limit: @options[:with_rate_limit]
     }.compact
   end
-
-  def extract_hashtags(text)
-    hashtags = text.scan(/#[^\s]+(\s+|$)/).flatten
-    text_without_hashtags = text.gsub(/#[^\s]+(\s+|$)/, '').strip
-    [text_without_hashtags, hashtags]
-  end
-
 
   def scheduled_status_attributes
     {

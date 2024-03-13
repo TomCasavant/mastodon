@@ -193,7 +193,8 @@ class StatusContent extends PureComponent {
           link.appendChild(acctSpan);
         }
       } else if (link.textContent[0] === '#' || (link.previousSibling && link.previousSibling.textContent && link.previousSibling.textContent[link.previousSibling.textContent.length - 1] === '#')) {
-        link.addEventListener('click', this.onHashtagClick.bind(this, link.text), false);
+        link.textContent = link.textContent.slice(1);
+	link.addEventListener('click', this.onHashtagClick.bind(this, link.text), false);
       } else {
         link.addEventListener('click', this.onLinkClick.bind(this), false);
         link.setAttribute('title', link.href);
