@@ -8,8 +8,8 @@ Modified an android client to handle editing posts (still need to make changes t
 ## TODO:
 
 - Editing a post in the web-ui will remove the hashtags from the activitypub activity and it's not clear to the user. Ideally when the user edits a post the hashtags will be appended to the end of their editing window (This is now fixed for an android client)
-- Hide in-line hashtags but keep their links. e.g. "Posting from #mastodon" -> "Posting from <a href='#mastodon'>mastodon</a>" but current experiments with that link to the specific instance where the post originates which would be a bad experience
-- Hide tags from other users posts (do not edit the activity, just when the tags are _displayed_ a user of the instance)
+- Hide in-line hashtags but keep their links. e.g. "Posting from #mastodon" -> "Posting from <a href='#mastodon'>mastodon</a>" but current experiments with that link to the specific instance where the post originates which would be a bad experience (visually this is fixed in the Web-UI but posts I create still federate to other instances with the inline '#' symbol present)
+- Hide categorical tags from other users posts (do not edit the activity, just when the tags are _displayed_ a user of the instance)
 - Editing a post will remove all tag associations
 
 ## Original README
