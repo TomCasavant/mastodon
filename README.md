@@ -5,6 +5,8 @@ Currently being run at [https://tomkahe.com](https://tomkahe.com)
 
 Modified an android client to handle editing posts (still need to make changes to the web-ui). The android client will append the tags when you open up the edit window [tomcasavant/moshidon](https://github.com/TomCasavant/moshidon)
 
+Themes are from https://github.com/chikorita157/mastodon-sakura
+
 ## TODO:
 
 - Editing a post in the web-ui will remove the hashtags from the activitypub activity and it's not clear to the user. Ideally when the user edits a post the hashtags will be appended to the end of their editing window (This is now fixed for an android client)
