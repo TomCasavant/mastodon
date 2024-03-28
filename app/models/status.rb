@@ -125,6 +125,16 @@ class Status < ApplicationRecord
     where('NOT EXISTS (SELECT * FROM statuses_tags forbidden WHERE forbidden.status_id = statuses.id AND forbidden.tag_id IN (?))', tag_ids)
   }
 
+  scope :tom_account, -> { joins(:account).merge(Account.matches_username('tom')
+                                                      .or(Account.matches_username('thomas'))
+                                                      .or(Account.matches_username('thom'))
+                                                      .or(Account.matches_username('tomas'))
+                                                      .or(Account.matches_display_name('tom'))
+                                                      .or(Account.matches_display_name('thomas'))
+                                                      .or(Account.matches_display_name('thom'))
+                                                      .or(Account.matches_display_name('tomas'))) }
+  
+
   scope :not_local_only, -> { where(local_only: [false, nil]) }
 
   after_create_commit :trigger_create_webhooks
