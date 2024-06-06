@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import BookmarksActiveIcon from '@/material-icons/400-24px/bookmarks-fill.svg?react';
 import BookmarksIcon from '@/material-icons/400-24px/bookmarks.svg?react';
+import ExploreActiveIcon from '@/material-icons/400-24px/explore-fill.svg?react';
 import ExploreIcon from '@/material-icons/400-24px/explore.svg?react';
 import HomeActiveIcon from '@/material-icons/400-24px/home-fill.svg?react';
 import HomeIcon from '@/material-icons/400-24px/home.svg?react';
@@ -29,6 +30,7 @@ import StarIcon from '@/material-icons/400-24px/star.svg?react';
 import { fetchFollowRequests } from 'flavours/glitch/actions/accounts';
 import { IconWithBadge } from 'flavours/glitch/components/icon_with_badge';
 import { NavigationPortal } from 'flavours/glitch/components/navigation_portal';
+import { identityContextPropShape, withIdentity } from 'flavours/glitch/identity_context';
 import { timelinePreview, trendsEnabled } from 'flavours/glitch/initial_state';
 import { transientSingleColumn } from 'flavours/glitch/is_mobile';
 import { preferencesLink } from 'flavours/glitch/utils/backend_links';
@@ -97,12 +99,8 @@ const FollowRequestsLink = () => {
 };
 
 class NavigationPanel extends Component {
-
-  static contextTypes = {
-    identity: PropTypes.object.isRequired,
-  };
-
   static propTypes = {
+    identity: identityContextPropShape,
     intl: PropTypes.object.isRequired,
     onOpenSettings: PropTypes.func,
   };
@@ -113,7 +111,7 @@ class NavigationPanel extends Component {
 
   render () {
     const { intl, onOpenSettings } = this.props;
-    const { signedIn, disabledAccountId } = this.context.identity;
+    const { signedIn, disabledAccountId } = this.props.identity;
 
     let banner = undefined;
 
@@ -143,7 +141,7 @@ class NavigationPanel extends Component {
         )}
 
         {trendsEnabled ? (
-          <ColumnLink transparent to='/explore' icon='explore' iconComponent={ExploreIcon} text={intl.formatMessage(messages.explore)} />
+          <ColumnLink transparent to='/explore' icon='explore' iconComponent={ExploreIcon} activeIconComponent={ExploreActiveIcon} text={intl.formatMessage(messages.explore)} />
         ) : (
           <ColumnLink transparent to='/search' icon='search' iconComponent={SearchIcon} text={intl.formatMessage(messages.search)} />
         )}
@@ -187,4 +185,4 @@ class NavigationPanel extends Component {
 
 }
 
-export default injectIntl(NavigationPanel);
+export default injectIntl(withIdentity(NavigationPanel));

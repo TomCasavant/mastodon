@@ -831,7 +831,6 @@ id:
       delete: Hapus
       edit_preset: Sunting preset peringatan
       empty: Anda belum mendefinisikan peringatan apapun.
-      title: Kelola preset peringatan
     webhooks:
       add_new: Tambah titik akhir
       delete: Hapus
@@ -1389,7 +1388,6 @@ id:
     import: Impor
     import_and_export: Impor dan ekspor
     migrate: Pemindahan akun
-    notifications: Notifikasi
     preferences: Pilihan
     profile: Profil
     relationships: Ikuti dan pengikut
@@ -1428,8 +1426,6 @@ id:
         other: "%{count} memilih"
       vote: Pilih
     show_more: Tampilkan selengkapnya
-    show_newer: Tampilkan lebih baru
-    show_older: Tampilkan lebih lama
     show_thread: Tampilkan utas
     title: '%{name}: "%{quote}"'
     visibilities:
