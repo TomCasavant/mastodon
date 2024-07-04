@@ -137,6 +137,8 @@ class Status < ApplicationRecord
 
   scope :not_local_only, -> { where(local_only: [false, nil]) }
 
+  scope :non_sensitive, -> { where.not(sensitive: true) }
+
   after_create_commit :trigger_create_webhooks
   after_update_commit :trigger_update_webhooks
 

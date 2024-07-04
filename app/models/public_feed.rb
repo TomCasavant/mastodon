@@ -31,6 +31,7 @@ class PublicFeed
     scope.merge!(media_only_scope) if media_only?
     scope.merge!(language_scope) if account&.chosen_languages.present?
     scope.merge!(tom_accounts_scope)
+    scope.merge!(non_sensitive)
 
     scope.cache_ids.to_a_paginated_by_id(limit, max_id: max_id, since_id: since_id, min_id: min_id)
   end
@@ -99,11 +100,15 @@ class PublicFeed
     Status.not_local_only
   end
 
+  def non_sensitive
+    Status.non_sensitive
+  end
+
   def language_scope
     Status.where(language: account.chosen_languages)
   end
 
-   def tom_accounts_scope
+  def tom_accounts_scope
     Status.tom_account
   end
 

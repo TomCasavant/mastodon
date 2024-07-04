@@ -133,7 +133,7 @@ const Firehose = ({ feedType, multiColumn }) => {
     <DismissableBanner id='community_timeline'>
       <FormattedMessage
         id='dismissable_banner.community_timeline'
-        defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.'
+        defaultMessage='These are the most recent public posts from Toms whose accounts are hosted by {domain}.'
         values={{ domain }}
       />
     </DismissableBanner>
@@ -141,7 +141,7 @@ const Firehose = ({ feedType, multiColumn }) => {
     <DismissableBanner id='public_timeline'>
       <FormattedMessage
         id='dismissable_banner.public_timeline'
-        defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.'
+        defaultMessage='These are the most recent public posts from Toms on the social web that people on {domain} follow.'
         values={{ domain }}
       />
     </DismissableBanner>
@@ -175,15 +175,15 @@ const Firehose = ({ feedType, multiColumn }) => {
 
       <div className='account__section-headline'>
         <NavLink exact to='/public/local'>
-          <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
+          <FormattedMessage tagName='div' id='firehose.local' defaultMessage='Local Tomline' />
         </NavLink>
 
         <NavLink exact to='/public/remote'>
-          <FormattedMessage tagName='div' id='firehose.remote' defaultMessage='Other servers' />
+          <FormattedMessage tagName='div' id='firehose.remote' defaultMessage='Foreign Tomline' />
         </NavLink>
 
         <NavLink exact to='/public'>
-          <FormattedMessage tagName='div' id='firehose.all' defaultMessage='All' />
+          <FormattedMessage tagName='div' id='firehose.all' defaultMessage='THE Tomline' />
         </NavLink>
       </div>
 
