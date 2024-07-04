@@ -6,6 +6,7 @@ class Api::V1::ScheduledStatusesController < Api::BaseController
   before_action -> { doorkeeper_authorize! :read, :'read:statuses' }, except: [:update, :destroy]
   before_action -> { doorkeeper_authorize! :write, :'write:statuses' }, only: [:update, :destroy]
 
+  before_action :require_user!
   before_action :set_statuses, only: :index
   before_action :set_status, except: :index
 
@@ -41,14 +42,6 @@ class Api::V1::ScheduledStatusesController < Api::BaseController
 
   def scheduled_status_params
     params.permit(:scheduled_at)
-  end
-
-  def pagination_params(core_params)
-    params.slice(:limit).permit(:limit).merge(core_params)
-  end
-
-  def insert_pagination_headers
-    set_pagination_headers(next_path, prev_path)
   end
 
   def next_path

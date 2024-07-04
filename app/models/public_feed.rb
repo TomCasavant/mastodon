@@ -33,7 +33,7 @@ class PublicFeed
     scope.merge!(tom_accounts_scope)
     scope.merge!(non_sensitive)
 
-    scope.cache_ids.to_a_paginated_by_id(limit, max_id: max_id, since_id: since_id, min_id: min_id)
+    scope.to_a_paginated_by_id(limit, max_id: max_id, since_id: since_id, min_id: min_id)
   end
 
   private

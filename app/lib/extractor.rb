@@ -86,6 +86,7 @@ module Extractor
     possible_entries
   end
 
+
   def clean_text(text)
     hashtags_with_indices = extract_hashtags_with_indices(text)
     hashtags = hashtags_with_indices.map { |entry| entry[:hashtag] }
@@ -136,6 +137,7 @@ module Extractor
   def extract_cashtags_with_indices(_text)
     []
   end
+
 
   def extract_extra_uris_with_indices(text)
     return [] unless text&.index(':')
