@@ -12,6 +12,13 @@ Modified an android client to handle editing posts (still need to make changes t
 - Hide tags from other users posts (do not edit the activity, just when the tags are _displayed_ a user of the instance)
 - Editing a post will remove all tag associations
 
+
+## Also includes several Pull Requests that were unmerged upstream
+- https://github.com/glitch-soc/mastodon/pull/2746
+- https://github.com/glitch-soc/mastodon/pull/2462
+- https://github.com/glitch-soc/mastodon/pull/2524
+- https://github.com/glitch-soc/mastodon/pull/2737
+
 ## Original README
 
 ---
