@@ -274,7 +274,6 @@ class Status extends ImmutablePureComponent {
     if (status.get('media_attachments').size && !muted) {
       autoCollapseHeight += 210;
     }
-
     if (collapse ||
       autoCollapseSettings.get('all') ||
       (autoCollapseSettings.get('notifications') && muted) ||
@@ -786,7 +785,10 @@ class Status extends ImmutablePureComponent {
     }
 
     if (this.props.prepend === 'reblog') {
-      rebloggedByText = intl.formatMessage({ id: 'status.reblogged_by', defaultMessage: '{name} boosted' }, { name: account.get('acct') });
+      rebloggedByText = intl.formatMessage(
+        { id: 'status.reblogged_by', defaultMessage: '{name} boosted' },
+        { name: account.get('acct') },
+      );
     }
 
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);

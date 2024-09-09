@@ -157,6 +157,8 @@ class ActionBar extends PureComponent {
     navigator.clipboard.writeText(url);
   };
 
+  handleNoOp = () => {}; // hack for reaction add button
+
   render () {
     const { status, intl } = this.props;
     const { signedIn, permissions } = this.props.identity;

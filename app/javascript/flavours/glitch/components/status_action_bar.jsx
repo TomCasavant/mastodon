@@ -34,6 +34,7 @@ import { me, maxReactions } from '../initial_state';
 import { IconButton } from './icon_button';
 import { RelativeTimestamp } from './relative_timestamp';
 
+
 const messages = defineMessages({
   delete: { id: 'status.delete', defaultMessage: 'Delete' },
   redraft: { id: 'status.redraft', defaultMessage: 'Delete & re-draft' },
@@ -212,6 +213,8 @@ class StatusActionBar extends ImmutablePureComponent {
   handleFilterClick = () => {
     this.props.onAddFilter(this.props.status);
   };
+
+  handleNoOp = () => {}; // hack for reaction add button
 
   render () {
     const { status, intl, withDismiss, withCounters, showReplyCount, scrollKey } = this.props;

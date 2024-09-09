@@ -161,5 +161,6 @@
   "status.show_filter_reason": "Show anyway",
   "status.show_less": "Show less",
   "status.show_more": "Show more",
-  "status.uncollapse": "Uncollapse"
+  "status.uncollapse": "Uncollapse",
+  "suggestions.dismiss": "Dismiss suggestion"
 }

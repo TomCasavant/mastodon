@@ -80,6 +80,9 @@ export const getAlerts = createSelector(state => state.get('alerts'), alerts =>
     ...item,
   })).toArray());
 
+/**
+ * Turns an accountId (or list of account ids) into an account (or list of accounts)
+ */
 export const makeGetNotification = () => createSelector([
   (_, base)             => base,
   (state, _, accountId) => state.getIn(['accounts', accountId]),

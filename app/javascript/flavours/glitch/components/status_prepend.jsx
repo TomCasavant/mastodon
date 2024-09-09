@@ -16,7 +16,6 @@ import StarIcon from '@/material-icons/400-24px/star-fill.svg?react';
 import { Icon } from 'flavours/glitch/components/icon';
 import { me } from 'flavours/glitch/initial_state';
 
-
 export default class StatusPrepend extends PureComponent {
 
   static propTypes = {
@@ -30,6 +29,18 @@ export default class StatusPrepend extends PureComponent {
   handleClick = (e) => {
     const { account, parseClick } = this.props;
     parseClick(e, `/@${account.get('acct')}`);
+  };
+
+  getUrlSuffix = () => {
+    const { type } = this.props;
+    switch (type) {
+    case 'reblog':
+      return '/reblogs';
+    case 'favourite':
+      return '/favourites';
+    default:
+      return '';
+    }
   };
 
   Message = () => {
@@ -50,6 +61,7 @@ export default class StatusPrepend extends PureComponent {
         </bdi>
       </a>
     );
+
     switch (type) {
     case 'featured':
       return (
@@ -67,7 +79,7 @@ export default class StatusPrepend extends PureComponent {
       return (
         <FormattedMessage
           id='notification.favourite'
-          defaultMessage='{name} favorited your status'
+          defaultMessage='{name} favourited your status'
           values={{ name : link }}
         />
       );

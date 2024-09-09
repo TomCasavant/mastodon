@@ -78,9 +78,10 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    build: .
+    build:
+        dockerfile: ./streaming/Dockerfile
+        context: .
     image: ghcr.io/mastodon/mastodon-streaming:v4.3.0-beta.1
-
     restart: always
     env_file: .env.production
     command: node ./streaming/index.js

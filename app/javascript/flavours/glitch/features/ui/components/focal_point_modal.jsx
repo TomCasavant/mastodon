@@ -50,7 +50,6 @@ const mapStateToProps = (state, { id }) => ({
   focusY: state.getIn(['compose', 'media_modal', 'focusY']),
   dirty: state.getIn(['compose', 'media_modal', 'dirty']),
   is_changing_upload: state.getIn(['compose', 'is_changing_upload']),
-  maxChars: state.getIn(['server', 'server', 'configuration', 'media_attachments', 'max_characters'], 1_500),
 });
 
 const mapDispatchToProps = (dispatch, { id }) => ({
@@ -280,7 +279,7 @@ class FocalPointModal extends ImmutablePureComponent {
   };
 
   render () {
-    const { media, intl, account, onClose, isUploadingThumbnail, description, lang, focusX, focusY, dirty, is_changing_upload, maxChars } = this.props;
+    const { media, intl, account, onClose, isUploadingThumbnail, description, lang, focusX, focusY, dirty, is_changing_upload } = this.props;
     const { dragging, detecting, progress, ocrStatus } = this.state;
     const x = (focusX /  2) + .5;
     const y = (focusY / -2) + .5;
@@ -376,7 +375,7 @@ class FocalPointModal extends ImmutablePureComponent {
               >
                 <FormattedMessage id='upload_modal.detect_text' defaultMessage='Detect text from picture' />
               </button>
-              <CharacterCounter max={maxChars} text={detecting ? '' : description} />
+              <CharacterCounter max={1500} text={detecting ? '' : description} />
             </div>
 
             <Button
