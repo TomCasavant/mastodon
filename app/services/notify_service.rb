@@ -3,8 +3,6 @@
 class NotifyService < BaseService
   include Redisable
 
-  MAXIMUM_GROUP_SPAN_HOURS = 12
-
   # TODO: the severed_relationships type probably warrants email notifications
   NON_EMAIL_TYPES = %i(
     admin.report
@@ -216,7 +214,7 @@ class NotifyService < BaseService
     return if drop?
 
     @notification.filtered = filter?
-    @notification.group_key = notification_group_key
+    @notification.set_group_key!
     @notification.save!
 
     # It's possible the underlying activity has been deleted

@@ -21,6 +21,7 @@ import {
   unmountNotifications,
   refreshStaleNotificationGroups,
   pollRecentNotifications,
+  shouldGroupNotificationType,
 } from 'mastodon/actions/notification_groups';
 import {
   disconnectTimeline,
@@ -205,6 +206,13 @@ function processNewNotification(
   groups: NotificationGroupsState['groups'],
   notification: ApiNotificationJSON,
 ) {
+  if (!shouldGroupNotificationType(notification.type)) {
+    notification = {
+      ...notification,
+      group_key: `ungrouped-${notification.id}`,
+    };
+  }
+
   const existingGroupIndex = groups.findIndex(
     (group) =>
       group.type !== 'gap' && group.group_key === notification.group_key,
@@ -242,14 +250,15 @@ function processNewNotification(
       groups.unshift(existingGroup);
     }
   } else {
-    // Create a new group
+    // We have not found an existing group, create a new one
     groups.unshift(createNotificationGroupFromNotificationJSON(notification));
   }
 }
 
 function trimNotifications(state: NotificationGroupsState) {
-  if (state.scrolledToTop) {
+  if (state.scrolledToTop && state.groups.length > NOTIFICATIONS_TRIM_LIMIT) {
     state.groups.splice(NOTIFICATIONS_TRIM_LIMIT);
+    ensureTrailingGap(state.groups);
   }
 }
 
@@ -396,6 +405,28 @@ function ensureLeadingGap(
     };
 
     groups.unshift(gap);
+    return gap;
+  }
+}
+
+// Ensure the groups list ends with a gap suitable for loading more, mutating it to append one if needed
+function ensureTrailingGap(
+  groups: NotificationGroupsState['groups'],
+): NotificationGap {
+  const groupOrGap = groups.at(-1);
+
+  if (groupOrGap?.type === 'gap') {
+    // We're expecting older notifications, so discard sinceId if it's set
+    groupOrGap.sinceId = undefined;
+
+    return groupOrGap;
+  } else {
+    const gap: NotificationGap = {
+      type: 'gap',
+      maxId: groupOrGap?.page_min_id,
+    };
+
+    groups.push(gap);
     return gap;
   }
 }
