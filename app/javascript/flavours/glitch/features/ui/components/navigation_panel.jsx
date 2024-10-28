@@ -36,7 +36,6 @@ import { timelinePreview, trendsEnabled } from 'flavours/glitch/initial_state';
 import { transientSingleColumn } from 'flavours/glitch/is_mobile';
 import { canManageReports, canViewAdminDashboard } from 'flavours/glitch/permissions';
 import { selectUnreadNotificationGroupsCount } from 'flavours/glitch/selectors/notifications';
-import { selectUseGroupedNotifications } from 'flavours/glitch/selectors/settings';
 import { preferencesLink } from 'flavours/glitch/utils/backend_links';
 
 import ColumnLink from './column_link';
@@ -142,30 +141,7 @@ class NavigationPanel extends Component {
             {banner}
           </div>
         }
-        {signedIn && (
-          <>
-            <ColumnLink transparent to='/home' icon='home' iconComponent={HomeIcon} activeIconComponent={HomeActiveIcon} text={intl.formatMessage(messages.home)} />
-            <NotificationsLink />
-            <FollowRequestsLink />
-          </>
-        )}
 
-        {trendsEnabled ? (
-          <ColumnLink transparent to='/explore' icon='explore' iconComponent={ExploreIcon} activeIconComponent={ExploreActiveIcon} text={intl.formatMessage(messages.explore)} />
-        ) : (
-          <ColumnLink transparent to='/search' icon='search' iconComponent={SearchIcon} text={intl.formatMessage(messages.search)} />
-        )}
-
-        {(!signedIn || timelinePreview) && (
-          <ColumnLink transparent to='/public/local' isActive={this.isFirehoseActive} icon='globe' iconComponent={PublicIcon} text={intl.formatMessage(messages.firehose)} />
-        )}
-        
-        {!signedIn && (
-            <div className='navigation-panel__sign-in-banner'>
-              <hr />
-              { disabledAccountId ? <DisabledAccountBanner /> : <SignInBanner /> }
-            </div>
-        )}
         <div className='navigation-panel__menu'>
           {signedIn && (
             <>
@@ -181,7 +157,7 @@ class NavigationPanel extends Component {
             <ColumnLink transparent to='/search' icon='search' iconComponent={SearchIcon} text={intl.formatMessage(messages.search)} />
           )}
 
-          {(signedIn || timelinePreview) && (
+          {(timelinePreview) && (
             <ColumnLink transparent to='/public/local' isActive={this.isFirehoseActive} icon='globe' iconComponent={PublicIcon} text={intl.formatMessage(messages.firehose)} />
           )}
 
@@ -194,19 +170,14 @@ class NavigationPanel extends Component {
 
           {signedIn && (
             <>
-              <ColumnLink transparent to='/conversations' icon='at' iconComponent={MailIcon} activeIconComponent={MailActiveIcon} text={intl.formatMessage(messages.direct)} />
               <ColumnLink transparent to='/bookmarks' icon='bookmarks' iconComponent={BookmarksIcon} activeIconComponent={BookmarksActiveIcon} text={intl.formatMessage(messages.bookmarks)} />
-              <ColumnLink transparent to='/favourites' icon='star' iconComponent={StarIcon} activeIconComponent={StarActiveIcon} text={intl.formatMessage(messages.favourites)} />
               <ColumnLink transparent to='/lists' icon='list-ul' iconComponent={ListAltIcon} activeIconComponent={ListAltActiveIcon} text={intl.formatMessage(messages.lists)} />
-
-              <ListPanel />
 
               <hr />
 
               {!!preferencesLink && <ColumnLink transparent href={preferencesLink} icon='cog' iconComponent={SettingsIcon} text={intl.formatMessage(messages.preferences)} />}
               <ColumnLink transparent onClick={onOpenSettings} icon='cogs' iconComponent={AdministrationIcon} text={intl.formatMessage(messages.app_settings)} />
 
-              {canManageReports(permissions) && <ColumnLink optional transparent href='/admin/reports' icon='flag' iconComponent={ModerationIcon} text={intl.formatMessage(messages.moderation)} />}
               {canViewAdminDashboard(permissions) && <ColumnLink optional transparent href='/admin/dashboard' icon='tachometer' iconComponent={AdministrationIcon} text={intl.formatMessage(messages.administration)} />}
             </>
           )}
@@ -215,27 +186,6 @@ class NavigationPanel extends Component {
             <hr />
             <ColumnLink transparent to='/about' icon='ellipsis-h' iconComponent={MoreHorizIcon} text={intl.formatMessage(messages.about)} />
           </div>
-        )}
-
-        {signedIn && (
-          <>
-            <ColumnLink transparent to='/conversations' icon='at' iconComponent={MailIcon} activeIconComponent={MailActiveIcon} text={intl.formatMessage(messages.direct)} />
-            <ColumnLink transparent to='/bookmarks' icon='bookmarks' iconComponent={BookmarksIcon} activeIconComponent={BookmarksActiveIcon} text={intl.formatMessage(messages.bookmarks)} />
-            <ColumnLink transparent to='/lists' icon='list-ul' iconComponent={ListAltIcon} activeIconComponent={ListAltActiveIcon} text={intl.formatMessage(messages.lists)} />
-
-            <hr />
-
-            {!!preferencesLink && <ColumnLink transparent href={preferencesLink} icon='cog' iconComponent={SettingsIcon} text={intl.formatMessage(messages.preferences)} />}
-            <ColumnLink transparent onClick={onOpenSettings} icon='cogs' iconComponent={AdministrationIcon} text={intl.formatMessage(messages.app_settings)} />
-          </>
-        )}
-
-		{!signedIn && (
-	        <div className='navigation-panel__legal'>
-	          <hr />
-	          <ColumnLink transparent to='/about' icon='ellipsis-h' iconComponent={MoreHorizIcon} text={intl.formatMessage(messages.about)} />
-	        </div>
-	    )}
         </div>
 
         <div className='flex-spacer' />

@@ -1,139 +1,108 @@
-# This file is designed for production server deployment, not local development work
-# For a containerized local dev environment, see: https://github.com/mastodon/mastodon/blob/main/README.md#docker
-
 services:
   db:
     restart: always
-    image: postgres:14-alpine
-    shm_size: 256mb
-    networks:
-      - internal_network
-    healthcheck:
-      test: ['CMD', 'pg_isready', '-U', 'postgres']
-    volumes:
-      - ./postgres14:/var/lib/postgresql/data
+    image: postgres:latest
     environment:
-      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+      POSTGRES_DB: mastodon
+      POSTGRES_USER: mastodon
+      POSTGRES_PASSWORD: mastodon
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_mastodon:/var/lib/postgresql/data
+    networks:
+      - mastodon_network
+      - reverse_proxy
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'mastodon']
 
   redis:
     restart: always
-    image: redis:7-alpine
+    image: redis:latest
     networks:
-      - internal_network
+      - mastodon_network
+      - reverse_proxy
+    volumes:
+      - /home/redis:/data
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
-    volumes:
-      - ./redis:/data
-
-  # es:
-  #   restart: always
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
-  #   environment:
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.enforce.bootstrap.checks=true"
-  #     - "xpack.license.self_generated.type=basic"
-  #     - "xpack.security.enabled=false"
-  #     - "xpack.watcher.enabled=false"
-  #     - "xpack.graph.enabled=false"
-  #     - "xpack.ml.enabled=false"
-  #     - "bootstrap.memory_lock=true"
-  #     - "cluster.name=es-mastodon"
-  #     - "discovery.type=single-node"
-  #     - "thread_pool.write.queue_size=1000"
-  #   networks:
-  #      - external_network
-  #      - internal_network
-  #   healthcheck:
-  #      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-  #   volumes:
-  #      - ./elasticsearch:/usr/share/elasticsearch/data
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #     nofile:
-  #       soft: 65536
-  #       hard: 65536
-  #   ports:
-  #     - '127.0.0.1:9200:9200'
 
   web:
-    # You can uncomment the following line if you want to not use the prebuilt image, for example if you have local code changes
-    # build: .
-    image: ghcr.io/mastodon/mastodon:v4.3.0-rc.1
+    build: .
+    image: tomkahe/mastodon:v4.3.0-rc.1
     restart: always
-    env_file: .env.production
-    command: bundle exec puma -C config/puma.rb
+    user: root
+    command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
+    env_file:
+      - .env.production
     networks:
-      - external_network
-      - internal_network
-    healthcheck:
-      # prettier-ignore
-      test: ['CMD-SHELL',"curl -s --noproxy localhost localhost:3000/health | grep -q 'OK' || exit 1"]
+      - mastodon_network
+      - reverse_proxy
     ports:
-      - '127.0.0.1:3000:3000'
+      - "3000:3000"
     depends_on:
       - db
       - redis
-      # - es
     volumes:
-      - ./public/system:/mastodon/public/system
+      - /home/tomakahe:/config
+      - /srv/dev-disk-by-uuid-540ab9c8-fa76-426e-91a8-7afeddcd5d2d/mastodon-data:/mastodon/public/system
+   # extra_hosts:
+     # - "xn--6r9aa.com:192.168.1.75"
+    #  - "ꩮꩮ.com:192.168.1.75"
 
-  streaming:
-    # You can uncomment the following lines if you want to not use the prebuilt image, for example if you have local code changes
+  streaming:    # You can uncomment the following lines if you want to not use the prebuilt image, for example if you have local code changes
     build:
       dockerfile: ./streaming/Dockerfile
       context: .
-    image: ghcr.io/mastodon/mastodon-streaming:v4.3.0-rc.1
+    image: tomkahe/mastodon-streaming:v4.3.0-rc.1
+
     restart: always
-    env_file: .env.production
-    command: node ./streaming/index.js
-    networks:
-      - external_network
-      - internal_network
+    command: node ./streaming
+    user: root
     healthcheck:
-      # prettier-ignore
       test: ['CMD-SHELL', "curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q 'OK' || exit 1"]
+    env_file:
+      - .env.production
+    networks:
+      - mastodon_network
+      - reverse_proxy
     ports:
-      - '127.0.0.1:4000:4000'
+      - "4000:4000"
     depends_on:
       - db
       - redis
+    volumes:
+      - /home/tomakahe:/config
+   # extra_hosts:
+   #   - "xn--6r9aa.com:192.168.1.75"
+   #   - "ꩮꩮ.com:192.168.1.75"
 
   sidekiq:
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.3.0-rc.1
+    image: tomkahe/mastodon:v4.3.0-rc.1
+    user: root
     restart: always
-    env_file: .env.production
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -c 100
+    env_file:
+      - .env.production
     depends_on:
       - db
       - redis
     networks:
-      - external_network
-      - internal_network
+      - mastodon_network
+      - reverse_proxy
     volumes:
-      - ./public/system:/mastodon/public/system
-    healthcheck:
-      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
-
-  ## Uncomment to enable federation with tor instances along with adding the following ENV variables
-  ## http_hidden_proxy=http://privoxy:8118
-  ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
-  # tor:
-  #   image: sirboops/tor
-  #   networks:
-  #      - external_network
-  #      - internal_network
-  #
-  # privoxy:
-  #   image: sirboops/privoxy
-  #   volumes:
-  #     - ./priv-config:/opt/config
-  #   networks:
-  #     - external_network
-  #     - internal_network
+      - /home/tomakahe:/config
+      - /srv/dev-disk-by-uuid-540ab9c8-fa76-426e-91a8-7afeddcd5d2d/mastodon-data:/mastodon/public/system
+   # extra_hosts:
+   #   - "xn--6r9aa.com:192.168.1.16"
+   #   - "ꩮꩮ.com:192.168.1.75"
 
 networks:
-  external_network:
-  internal_network:
-    internal: true
+  mastodon_network:
+    driver: bridge
+  reverse_proxy:
+    driver: bridge
+
+volumes:
+  postgres_mastodon:
