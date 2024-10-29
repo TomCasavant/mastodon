@@ -51,7 +51,7 @@
 #  requested_review_at           :datetime
 #  indexable                     :boolean          default(FALSE), not null
 #  attribution_domains           :string           default([]), is an Array
-#
+#  atproto_did                   :string
 
 class Account < ApplicationRecord
   self.ignored_columns += %w(
