@@ -63,6 +63,11 @@ module Mastodon
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
+    config.hosts = [
+     "tomkahe.com",     # Allow requests from example.com
+     /.*\.tomkahe\.com/ # Allow requests from subdomains like `www.example.com`
+   ]
+
     # Explicitly set the cache format version to align with Rails version
     config.active_support.cache_format_version = 7.1
 

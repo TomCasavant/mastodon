@@ -67,7 +67,6 @@ Rails.application.routes.draw do
 
   scope path: '.well-known' do
     scope module: :well_known do
-      get 'atproto-did', to: 'atproto_did#show', as: :atproto_did
       get 'oauth-authorization-server', to: 'oauth_metadata#show', as: :oauth_metadata, defaults: { format: 'json' }
       get 'host-meta', to: 'host_meta#show', as: :host_meta
       get 'nodeinfo', to: 'node_info#index', as: :nodeinfo, defaults: { format: 'json' }
@@ -76,6 +75,15 @@ Rails.application.routes.draw do
     get 'change-password', to: redirect('/auth/edit'), as: nil
     get 'proxy', to: redirect { |_, request| "/authorize_interaction?#{request.params.to_query}" }, as: nil
   end
+
+  scope path: '.well-known', constraints: { subdomain: /.+/ } do
+    scope module: :well_known do
+      get 'atproto-did', to: 'atproto_did#show', as: :atproto_did
+      # other routes
+    end
+  end
+
+
 
   get '/nodeinfo/2.0', to: 'well_known/node_info#show', as: :nodeinfo_schema
 
