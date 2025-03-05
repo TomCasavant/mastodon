@@ -36,9 +36,10 @@ module WellKnown
     end
 
     def username_from_resource
-      resource_user = request.subdomain  # Use subdomain if resource_param is nil
+      resource_user = request.subdomain.gsub('-', '_') # bridgy usernames convert _ to -
       username, *domain_parts = resource_user.split('.')
       domain = request.domain
+      
 
       if Rails.configuration.x.alternate_domains.include?(domain)
         resource_user = "#{username}@#{Rails.configuration.x.local_domain}"
