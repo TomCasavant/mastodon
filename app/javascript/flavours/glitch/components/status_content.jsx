@@ -10,7 +10,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
 import ChevronRightIcon from '@/material-icons/400-24px/chevron_right.svg?react';
-import QuoteIcon from '@/material-icons/400-24px/format_quote-fill.svg?react';
 import { Icon } from 'flavours/glitch/components/icon';
 import PollContainer from 'flavours/glitch/containers/poll_container';
 import { identityContextPropShape, withIdentity } from 'flavours/glitch/identity_context';
@@ -137,7 +136,6 @@ class StatusContent extends PureComponent {
     rewriteMentions: PropTypes.string,
     languages: ImmutablePropTypes.map,
     intl: PropTypes.object,
-    zoomEmojisOnHover: PropTypes.bool.isRequired,
     // from react-router
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
@@ -191,7 +189,7 @@ class StatusContent extends PureComponent {
         link.classList.add('unhandled-link');
 
         link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noopener nofollow');
+        link.setAttribute('rel', 'noopener nofollow noreferrer');
 
         try {
           if (tagLinks && isLinkMisleading(link)) {
@@ -319,7 +317,7 @@ class StatusContent extends PureComponent {
   };
 
   render () {
-    const { status, intl, zoomEmojisOnHover, statusContent } = this.props;
+    const { status, intl, statusContent } = this.props;
 
     const renderReadMore = this.props.onClick && status.get('collapsed');
     const contentLocale = intl.locale.replace(/[_-].*/, '');
@@ -331,12 +329,7 @@ class StatusContent extends PureComponent {
     const classNames = classnames('status__content', {
       'status__content--with-action': this.props.onClick && this.props.history,
       'status__content--collapsed': renderReadMore,
-      'status__content--zoom-emojis-on-hover': zoomEmojisOnHover,
     });
-    const textClassNames = classnames('status__content__text status__content__text--visible translate', {
-      'status__content--zoom-emojis-on-hover': zoomEmojisOnHover,
-    });
-
 
     const readMoreButton = renderReadMore && (
       <button className='status__content__read-more-button' onClick={this.props.onClick} key='read-more'>
@@ -348,37 +341,6 @@ class StatusContent extends PureComponent {
       <TranslateButton onClick={this.handleTranslate} translation={status.get('translation')} />
     );
 
-    let quote = '';
-
-    if (status.get('quote', null) !== null) {
-      let quoteStatus = status.get('quote');
-      let quoteStatusContent = { __html: quoteStatus.get('contentHtml') };
-      let quoteStatusAccount = quoteStatus.get('account');
-      let quoteStatusDisplayName = { __html: quoteStatusAccount.get('display_name_html') };
-
-      quote = (
-        <div className='status__quote'>
-          <blockquote>
-            <bdi>
-              <span className='quote-display-name'>
-                <Icon
-                  fixedWidth
-                  aria-hidden='true'
-                  key='icon-quote-right'
-                  icon={QuoteIcon} />
-                <strong className='display-name__html'>
-                  <a onClick={this.handleAccountClick} href={quoteStatus.getIn(['account', 'url'])} dangerouslySetInnerHTML={quoteStatusDisplayName} />
-                </strong>
-              </span>
-            </bdi>
-            <div>
-              <a href={quoteStatus.get('url')} target='_blank' rel='noopener' dangerouslySetInnerHTML={quoteStatusContent} />
-            </div>
-          </blockquote>
-        </div>
-      );
-    }
-
     const poll = !!status.get('poll') && (
       <PollContainer pollId={status.get('poll')} status={status} lang={language} />
     );
@@ -387,8 +349,7 @@ class StatusContent extends PureComponent {
       return (
         <>
           <div className={classNames} ref={this.setRef} onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp} tabIndex={0} key='status-content' onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-            {quote}
-            <div className={textClassNames} lang={language} dangerouslySetInnerHTML={content} />
+            <div className='status__content__text status__content__text--visible translate' lang={language} dangerouslySetInnerHTML={content} />
 
             {poll}
             {translateButton}
@@ -400,8 +361,7 @@ class StatusContent extends PureComponent {
     } else {
       return (
         <div className={classNames} ref={this.setRef} tabIndex={0} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-          {quote}
-          <div className={textClassNames} lang={language} dangerouslySetInnerHTML={content} />
+          <div className='status__content__text status__content__text--visible translate' lang={language} dangerouslySetInnerHTML={content} />
 
           {poll}
           {translateButton}
@@ -413,3 +373,4 @@ class StatusContent extends PureComponent {
 }
 
 export default withRouter(withIdentity(connect(mapStateToProps)(injectIntl(StatusContent))));
+

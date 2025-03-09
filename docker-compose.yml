@@ -4,22 +4,21 @@
 services:
   db:
     restart: always
-    image: postgres:14-alpine
+    image: postgres:16-alpine
     shm_size: 256mb
     environment:
       POSTGRES_DB: mastodon
       POSTGRES_USER: mastodon
       POSTGRES_PASSWORD: mastodon
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
     networks:
       - mastodon_network
       - reverse_proxy
     healthcheck:
-      test: ['CMD', 'pg_isready', '-U', 'postgres']
+      test: ['CMD', 'pg_isready', '-U', 'mastodon']
     volumes:
-      - ./postgres14:/var/lib/postgresql/data
-    environment:
-      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+      - postgres_mastodon:/var/lib/postgresql/data
 
   redis:
     restart: always
@@ -72,13 +71,11 @@ services:
     networks:
       - mastodon_network
       - reverse_proxy
-      - external_network
-      - internal_network
     healthcheck:
       # prettier-ignore
       test: ['CMD-SHELL',"curl -s --noproxy localhost localhost:3000/health | grep -q 'OK' || exit 1"]
     ports:
-      - '127.0.0.1:3000:3000'
+      - '3000:3000'
     depends_on:
       - db
       - redis
@@ -106,7 +103,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', "curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q 'OK' || exit 1"]
     ports:
-      - '127.0.0.1:4000:4000'
+      - '4000:4000'
     depends_on:
       - db
       - redis
