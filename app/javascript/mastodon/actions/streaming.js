@@ -1,7 +1,5 @@
 // @ts-check
 
-import { selectUseGroupedNotifications } from 'mastodon/selectors/settings';
-
 import { getLocale } from '../locales';
 import { connectStream } from '../stream';
 
@@ -13,7 +11,7 @@ import {
 } from './announcements';
 import { updateConversations } from './conversations';
 import { processNewNotificationForGroups, refreshStaleNotificationGroups, pollRecentNotifications as pollRecentGroupNotifications } from './notification_groups';
-import { updateNotifications, expandNotifications } from './notifications';
+import { updateNotifications } from './notifications';
 import { updateStatus } from './statuses';
 import {
   updateTimeline,
@@ -104,14 +102,11 @@ export const connectTimelineStream = (timelineId, channelName, params = {}, opti
           // @ts-expect-error
           const notificationJSON = JSON.parse(data.payload);
           dispatch(updateNotifications(notificationJSON, messages, locale));
-   
+          // TODO: remove this once the groups feature replaces the previous one
           dispatch(processNewNotificationForGroups(notificationJSON));
           break;
         }
         case 'notifications_merged': {
-          const state = getState();
-          if (state.notifications.top || !state.notifications.mounted)
-            dispatch(expandNotifications({ forceLoad: true, maxId: undefined }));
           dispatch(refreshStaleNotificationGroups());
           break;
         }

@@ -44,11 +44,6 @@
       background: color.adjust($ui-primary-color, $lightness: -5%);
     }
 
-    &::-ms-fill {
-      border-radius: 4px;
-      background: color.adjust($ui-primary-color, $lightness: -5%);
-    }
-
     &::-webkit-progress-value {
       border-radius: 4px;
       background: color.adjust($ui-primary-color, $lightness: -5%);

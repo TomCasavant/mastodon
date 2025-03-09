@@ -84,6 +84,7 @@
   width: 100%;
 
   .account {
+    max-width: calc(56px + 30ch);
     padding: 0;
     border: 0;
   }
@@ -107,7 +108,7 @@
   tbody td {
     padding: 15px 0;
     vertical-align: middle;
-    border-bottom: 1px solid lighten($ui-base-color, 8%);
+    border-bottom: 1px solid color.adjust($ui-base-color, $lightness: 8%);
   }
 
   tbody tr:last-child td {

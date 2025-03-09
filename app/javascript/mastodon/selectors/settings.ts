@@ -35,10 +35,6 @@ export const selectSettingsNotificationsQuickFilterAdvanced = (
 ) =>
   state.settings.getIn(['notifications', 'quickFilter', 'advanced']) as boolean;
 
-export const selectUseGroupedNotifications = (state: RootState) =>
-  forceGroupedNotifications ||
-  (state.settings.getIn(['notifications', 'groupingBeta']) as boolean);
-
 export const selectSettingsNotificationsShowUnread = (state: RootState) =>
   state.settings.getIn(['notifications', 'showUnread']) as boolean;
 
@@ -55,5 +51,8 @@ export const selectSettingsNotificationsMinimizeFilteredBanner = (
   state: RootState,
 ) =>
   state.settings.getIn(['notifications', 'minimizeFilteredBanner']) as boolean;
+
+export const selectSettingsNotificationsGroupFollows = (state: RootState) =>
+  state.settings.getIn(['notifications', 'group', 'follow']) as boolean;
 
 /* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */

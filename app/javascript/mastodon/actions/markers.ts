@@ -2,7 +2,6 @@ import { debounce } from 'lodash';
 
 import type { MarkerJSON } from 'mastodon/api_types/markers';
 import { getAccessToken } from 'mastodon/initial_state';
-import { selectUseGroupedNotifications } from 'mastodon/selectors/settings';
 import type { AppDispatch, RootState } from 'mastodon/store';
 import { createAppAsyncThunk } from 'mastodon/store/typed_functions';
 

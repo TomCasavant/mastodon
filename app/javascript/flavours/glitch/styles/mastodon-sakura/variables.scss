@@ -60,22 +60,10 @@ $ui-button-destructive-focus-background-color: $red-600 !default;
 
 // Newly added colors
 $account-background-color: $white !default;
-
-// Invert darkened and lightened colors
-@function darken($color, $amount) {
-  @return hsl(
-    color.channel($color, 'hue', $space: hsl),
-    saturation($color),
-    lightness($color) + $amount
-  );
-}
-
-@function lighten($color, $amount) {
-  @return hsl(
-    color.channel($color, 'hue', $space: hsl),
-    saturation($color),
-    lightness($color) - $amount
-  );
-}
-
 $emojis-requiring-inversion: 'chains';
+
+body {
+  --dropdown-background-color: #feeeed;
+  --background-color: #f1d6dc;
+  --background-color-tint: #feeeed;
+}

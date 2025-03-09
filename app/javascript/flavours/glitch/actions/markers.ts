@@ -2,7 +2,6 @@ import { debounce } from 'lodash';
 
 import type { MarkerJSON } from 'flavours/glitch/api_types/markers';
 import { getAccessToken } from 'flavours/glitch/initial_state';
-import { selectUseGroupedNotifications } from 'flavours/glitch/selectors/settings';
 import type { AppDispatch, RootState } from 'flavours/glitch/store';
 import { createAppAsyncThunk } from 'flavours/glitch/store/typed_functions';
 

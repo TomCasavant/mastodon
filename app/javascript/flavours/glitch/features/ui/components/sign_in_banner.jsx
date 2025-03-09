@@ -46,9 +46,10 @@ const SignInBanner = () => {
   return (
     <div className='sign-in-banner'>
       <p><strong><FormattedMessage id='sign_in_banner.mastodon_is' defaultMessage="Mastodon is the best way to keep up with what's happening." /></strong></p>
-      <p><FormattedMessage id='sign_in_banner.follow_anyone' defaultMessage='Follow anyone across the fediverse and see it all in chronological order.' /></p>
+      <p><FormattedMessage id='sign_in_banner.follow_anyone' defaultMessage='Follow anyone across the fediverse and see it all in chronological order. No algorithms, ads, or clickbait in sight.' /></p>
       {signupButton}
       <a href='/auth/sign_in' className='button button--block button-tertiary'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Login' /></a>
+      <a href='https://elk.urusai.social/' className='button button--block'>Alternative UI (Elk)</a>
     </div>
   );
 };
