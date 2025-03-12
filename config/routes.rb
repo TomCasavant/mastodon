@@ -59,7 +59,6 @@ Rails.application.routes.draw do
   end
 
 
-
   get '/nodeinfo/2.0', to: 'well_known/node_info#show', as: :nodeinfo_schema
 
   get 'manifest', to: 'manifests#show', defaults: { format: 'json' }
