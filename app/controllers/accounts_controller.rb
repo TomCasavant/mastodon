@@ -21,7 +21,7 @@ class AccountsController < ApplicationController
         expires_in(15.seconds, public: true, stale_while_revalidate: 30.seconds, stale_if_error: 1.hour) unless user_signed_in?
       end
 
-      format.any(:rss, :txt) do
+      format.any(:rss, :txt, :opml) do
         expires_in 1.minute, public: true
 
         limit     = params[:limit].present? ? [params[:limit].to_i, PAGE_SIZE_MAX].min : PAGE_SIZE

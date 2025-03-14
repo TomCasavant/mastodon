@@ -18,9 +18,6 @@ export const SERVER_DOMAIN_BLOCKS_FETCH_REQUEST = 'SERVER_DOMAIN_BLOCKS_FETCH_RE
 export const SERVER_DOMAIN_BLOCKS_FETCH_SUCCESS = 'SERVER_DOMAIN_BLOCKS_FETCH_SUCCESS';
 export const SERVER_DOMAIN_BLOCKS_FETCH_FAIL    = 'SERVER_DOMAIN_BLOCKS_FETCH_FAIL';
 
-export const SERVER_BUBBLE_DOMAINS_FETCH_REQUEST = 'SERVER_BUBBLE_DOMAINS_FETCH_REQUEST';
-export const SERVER_BUBBLE_DOMAINS_FETCH_SUCCESS = 'SERVER_BUBBLE_DOMAINS_FETCH_SUCCESS';
-export const SERVER_BUBBLE_DOMAINS_FETCH_FAIL    = 'SERVER_BUBBLE_DOMAINS_FETCH_FAIL';
 
 export const fetchServer = () => (dispatch, getState) => {
   if (getState().getIn(['server', 'server', 'isLoading'])) {
@@ -129,41 +126,3 @@ const fetchDomainBlocksSuccess = (isAvailable, blocks) => ({
   blocks,
 });
 
-const fetchDomainBlocksFail = error => ({
-  type: SERVER_DOMAIN_BLOCKS_FETCH_FAIL,
-  error,
-});
-
-export const fetchBubbleDomains = () => (dispatch, getState) => {
-  if (getState().getIn(['server', 'bubbleDomains', 'isLoading'])) {
-    return;
-  }
-
-  dispatch(fetchBubbleDomainsRequest());
-
-  api()
-    .get('/api/v1/instance/bubble_domains')
-    .then(({ data }) => dispatch(fetchBubbleDomainsSuccess(true, data)))
-    .catch(err => {
-      if (err.response.status === 404) {
-        dispatch(fetchBubbleDomainsSuccess(false, []));
-      } else {
-        dispatch(fetchBubbleDomainsFail(err));
-      }
-    });
-};
-
-const fetchBubbleDomainsRequest = () => ({
-  type: SERVER_BUBBLE_DOMAINS_FETCH_REQUEST,
-});
-
-const fetchBubbleDomainsSuccess = (isAvailable, domains) => ({
-  type: SERVER_BUBBLE_DOMAINS_FETCH_SUCCESS,
-  isAvailable,
-  domains,
-});
-
-const fetchBubbleDomainsFail = error => ({
-  type: SERVER_BUBBLE_DOMAINS_FETCH_FAIL,
-  error,
-});
