@@ -67,5 +67,8 @@
   .fields-group
     = f.input :bot, as: :boolean, wrapper: :with_label, hint: t('simple_form.hints.defaults.bot')
 
+  .fields-group
+    = f.input :atproto_did, wrapper: :with_block_label, input_html: { maxlength: 100 }, hint: "DID:PLC is a unique identifier for the account in the AtProto network."
+
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit
