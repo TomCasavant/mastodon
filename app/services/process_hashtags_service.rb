@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class ProcessHashtagsService < BaseService
-  def call(status, raw_tags = [])
+  def call(status, raw_tags = [], raw_text='')
     @status        = status
     @account       = status.account
-    @raw_tags      = status.local? ? Extractor.extract_hashtags(status.text) : raw_tags
+    @raw_tags      = status.local? ? Extractor.extract_hashtags(raw_text) : raw_tags
     @previous_tags = status.tags.to_a
     @current_tags  = []
 

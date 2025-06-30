@@ -183,6 +183,7 @@ class StatusContent extends PureComponent {
           link.appendChild(acctSpan);
         }
       } else if (link.textContent[0] === '#' || (link.previousSibling && link.previousSibling.textContent && link.previousSibling.textContent[link.previousSibling.textContent.length - 1] === '#')) {
+		link.textContent = link.textContent.slice(1);
         link.addEventListener('click', this.onHashtagClick.bind(this, link.text), false);
         link.setAttribute('data-menu-hashtag', this.props.status.getIn(['account', 'id']));
       } else {

@@ -156,7 +156,7 @@ class PostStatusService < BaseService
   end
 
   def postprocess_status!
-    process_hashtags_service.call(@status)
+    process_hashtags_service.call(@status, [], @text)
     Trends.tags.register(@status)
     LinkCrawlWorker.perform_async(@status.id)
     DistributionWorker.perform_async(@status.id)
@@ -224,8 +224,9 @@ class PostStatusService < BaseService
   end
 
   def status_attributes
+  	text_without_hashtags = Extractor.clean_text(@text)
     {
-      text: @text,
+      text: text_without_hashtags,
       media_attachments: @media || [],
       ordered_media_attachment_ids: (@options[:media_ids] || []).map(&:to_i) & @media.map(&:id),
       thread: @in_reply_to,
