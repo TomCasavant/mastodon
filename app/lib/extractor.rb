@@ -53,6 +53,51 @@ module Extractor
     possible_entries
   end
 
+  def clean_text(text)
+    hashtags_with_indices = extract_hashtags_with_indices(text)
+    hashtags = hashtags_with_indices.map { |entry| entry[:hashtag] }
+    cleaned_text = text.dup
+
+    entities = hashtags_with_indices.map { |entry| { hashtag: true, indices: entry[:indices] } }
+    block_begin = nil
+    block_end = nil
+
+    entities.each_with_index do |entity, i|
+      next unless entity[:hashtag]
+
+      next_entity = entities[i + 1]
+
+      if !next_entity.nil? && !next_entity[:hashtag]
+        block_begin = nil
+        block_end = nil
+        next
+      elsif next_entity.nil?
+        block_begin = entity[:indices].first if block_begin.nil?
+        block_end = entity[:indices].last
+        next
+      end
+
+      entity_end = entity[:indices].last
+      next_entity_start = next_entity[:indices].first
+
+      if next_entity_start == entity_end + 1
+        block_begin = entity[:indices].first if block_begin.nil?
+        block_end = entity_end
+      else
+        block_begin = nil
+        block_end = nil
+      end
+    end
+
+    # Remove the block of hashtags at the end of the text
+    if block_begin && block_end && cleaned_text[block_end..].strip.empty? && cleaned_text[block_begin - 1] == "\n"
+      cleaned_text.slice!(block_begin..block_end)
+    end
+
+    cleaned_text.strip
+  end
+
+
   def extract_hashtags_with_indices(text, _options = {})
     return [] unless text&.index('#')
 
