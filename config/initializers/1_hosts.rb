@@ -30,6 +30,14 @@ Rails.application.configure do
   unless Rails.env.test?
     config.hosts << host if host.present?
     config.hosts << web_host if web_host.present?
+    alternate_domains.each do |domain|
+	  if domain.start_with?('*.')  # Convert wildcard domain to regex
+	    regex_domain = /\.#{Regexp.escape(domain[2..])}$/
+	    config.hosts << regex_domain
+	  else
+	    config.hosts << domain
+	  end
+  	end
     config.hosts.concat(alternate_domains) if alternate_domains.present?
     config.host_authorization = { exclude: ->(request) { request.path == '/health' } }
   end
