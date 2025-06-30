@@ -1,9 +1,7 @@
 import type { Account } from 'flavours/glitch/models/account';
 import type { StatusReaction } from 'flavours/glitch/models/reaction';
-
 import { useHovering } from '../hooks/useHovering';
 import { autoPlayGif } from '../initial_state';
-
 import { Emoji } from './status_reactions';
 
 interface Props {

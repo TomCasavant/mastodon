@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Following list for <%= @account.username %></title>
+  </head>
+  <body>
+    <% grouped_users = Hash.new { |hash, key| hash[key] = [] } %>
+
+    <% @account.following.each do |user| %>
+      <% user_tags = user.featured_tags.map(&:display_name) %>
+      <% user_tags = ["Uncategorized"] if user_tags.empty? %> 
+      <% user_tags.each { |tag| grouped_users[tag] << user } %>
+    <% end %>
+
+    <% filtered_groups = grouped_users.select { |tag, users| users.size >= 3 } %>
+
+    <% filtered_groups.each do |tag, users| %>
+      <outline text="<%= tag %>">
+        <% users.uniq.each do |user| %>
+          <% 
+            user_url = user.local? ? "https://#{Rails.configuration.x.local_domain}/@#{user.acct}" : user.url
+            rss_path = (user_url && user_url.include?("brid.gy")) ? "/rss" : ".rss"
+          %>
+          <outline text="<%= user.display_name %>" type="rss" htmlUrl="<%= user_url %>" xmlUrl="<%= user_url + rss_path %>" />
+        <% end %>
+      </outline>
+    <% end %>
+  </body>
+</opml>
+

@@ -64,7 +64,8 @@ services:
 
   web:
     build: .
-    image: tomkahe/mastodon:v4.3.4
+    image: tomkahe/mastodon:v4.3.6
+    user: root
     restart: always
     env_file: .env.production
     command: bundle exec puma -C config/puma.rb
@@ -91,8 +92,7 @@ services:
     build:
       dockerfile: ./streaming/Dockerfile
       context: .
-    image: tomkahe/mastodon-streaming:v4.3.4
-
+    image: tomkahe/mastodon-streaming:v4.3.6
     restart: always
     env_file: .env.production
     command: node ./streaming/index.js
@@ -110,11 +110,11 @@ services:
 
   sidekiq:
     build: .
-    image: tomkahe/mastodon:v4.3.4
+    image: tomkahe/mastodon:v4.3.6
     user: root
     restart: always
     env_file: .env.production
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -c 15
     depends_on:
       - db
       - redis
