@@ -33,6 +33,8 @@ module WellKnown
       username, *domain_parts = resource_user.split('.')
       domain = request.domain
 
+      username = username.tr('-', '_')
+
       if Rails.configuration.x.alternate_domains.include?(domain)
         resource_user = "#{username}@#{Rails.configuration.x.local_domain}"
       else
