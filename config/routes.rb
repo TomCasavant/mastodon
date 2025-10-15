@@ -51,6 +51,12 @@ Rails.application.routes.draw do
     get 'proxy', to: redirect { |_, request| "/authorize_interaction?#{request.params.to_query}" }, as: nil
   end
 
+  scope path: '.well-known', constraints: { subdomain: /.+/ } do
+    scope module: :well_known do
+      get 'atproto-did', to: 'atproto_did#show', as: :atproto_did
+    end
+  end
+
   get '/nodeinfo/2.0', to: 'well_known/node_info#show', as: :nodeinfo_schema
 
   get 'manifest', to: 'manifests#show', defaults: { format: 'json' }
